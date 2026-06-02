@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora IRPF — Imposto de Renda Pessoa Física</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>Calculadora IRPF</h1>
+    <p>Imposto de Renda da Pessoa Física &mdash; conforme legislação brasileira vigente</p>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="mensal">Cálculo Mensal</button>
+      <button class="tab-btn" data-tab="anual">Declaração Anual</button>
+      <button class="tab-btn" data-tab="tabelas">Tabelas de Referência</button>
+    </div>
+
+    <!-- ── Aba Mensal ─────────────────────────────────────────────────── -->
+    <div id="pane-mensal" class="tab-pane active">
+      <div class="card">
+        <h2>Retenção na Fonte — Mensal</h2>
+        <form id="form-mensal" novalidate>
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label for="ano-mensal">Ano-calendário</label>
+              <select id="ano-mensal">
+                <option value="2024" selected>2024</option>
+                <option value="2023">2023</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="rendimento-bruto-mensal">Rendimento bruto mensal (R$)</label>
+              <input type="number" id="rendimento-bruto-mensal" min="0" step="0.01" placeholder="0,00" required>
+            </div>
+
+            <div class="form-group">
+              <label for="inss-mensal">INSS mensal (R$)</label>
+              <div class="input-group">
+                <input type="number" id="inss-mensal" min="0" step="0.01" placeholder="0,00">
+                <button type="button" id="calcular-inss" class="btn-secondary" title="Calcular INSS automaticamente pelo salário bruto">Calcular INSS</button>
+              </div>
+              <span class="form-hint">Para calcular automaticamente, preencha o salário bruto abaixo.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="salario-bruto-mensal">Salário bruto (para cálculo do INSS)</label>
+              <input type="number" id="salario-bruto-mensal" min="0" step="0.01" placeholder="0,00">
+              <span class="form-hint">Usado apenas para estimar o INSS pelo botão acima.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="dependentes-mensal">Número de dependentes</label>
+              <input type="number" id="dependentes-mensal" min="0" step="1" value="0">
+              <span class="form-hint">Dedução de R$ 189,59 por dependente/mês (2024)</span>
+            </div>
+
+            <div class="form-group">
+              <label for="pensao-mensal">Pensão alimentícia mensal (R$)</label>
+              <input type="number" id="pensao-mensal" min="0" step="0.01" placeholder="0,00">
+              <span class="form-hint">Apenas quando paga por decisão judicial</span>
+            </div>
+
+            <div class="form-group full">
+              <label for="outras-deducoes-mensal">Outras deduções legais mensais (R$)</label>
+              <input type="number" id="outras-deducoes-mensal" min="0" step="0.01" placeholder="0,00">
+            </div>
+
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Calcular IR Mensal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Aba Anual ──────────────────────────────────────────────────── -->
+    <div id="pane-anual" class="tab-pane">
+      <div class="card">
+        <h2>Declaração de Ajuste Anual</h2>
+        <form id="form-anual" novalidate>
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label for="ano-anual">Ano-base</label>
+              <select id="ano-anual">
+                <option value="2024" selected>2024 (Declaração 2025)</option>
+                <option value="2023">2023 (Declaração 2024)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="rendimento-anual">Total de rendimentos tributáveis (R$)</label>
+              <input type="number" id="rendimento-anual" min="0" step="0.01" placeholder="0,00" required>
+              <span class="form-hint">Salários, pró-labore, aluguéis, etc.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="inss-anual">INSS total pago no ano (R$)</label>
+              <div class="input-group">
+                <input type="number" id="inss-anual" min="0" step="0.01" placeholder="0,00">
+                <button type="button" id="calcular-inss-anual" class="btn-secondary">× 12</button>
+              </div>
+              <span class="form-hint">Informe o salário bruto mensal e clique × 12 para estimar.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="salario-bruto-mensal-anual">Salário bruto mensal (para estimar INSS)</label>
+              <input type="number" id="salario-bruto-mensal-anual" min="0" step="0.01" placeholder="0,00">
+            </div>
+
+            <div class="form-group">
+              <label for="dependentes-anual">Número de dependentes</label>
+              <input type="number" id="dependentes-anual" min="0" step="1" value="0">
+              <span class="form-hint">Dedução de R$ 2.275,08 por dependente/ano (2024)</span>
+            </div>
+
+            <div class="form-group">
+              <label for="despesas-medicas">Despesas médicas no ano (R$)</label>
+              <input type="number" id="despesas-medicas" min="0" step="0.01" placeholder="0,00">
+              <span class="form-hint">Sem limite. Inclui médicos, dentistas, hospitais, plano de saúde.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="despesas-instrucao">Despesas com instrução no ano (R$)</label>
+              <input type="number" id="despesas-instrucao" min="0" step="0.01" placeholder="0,00">
+              <span class="form-hint">Limite de R$ 3.561,50 por pessoa (titular + dependentes)</span>
+            </div>
+
+            <div class="form-group">
+              <label for="pessoas-instrucao">Pessoas com despesas de instrução</label>
+              <input type="number" id="pessoas-instrucao" min="1" step="1" value="1">
+              <span class="form-hint">Titular + dependentes com despesas de instrução</span>
+            </div>
+
+            <div class="form-group">
+              <label for="pensao-anual">Pensão alimentícia anual (R$)</label>
+              <input type="number" id="pensao-anual" min="0" step="0.01" placeholder="0,00">
+              <span class="form-hint">Apenas quando paga por decisão judicial</span>
+            </div>
+
+            <div class="form-group">
+              <label for="outras-deducoes-anual">Outras deduções legais anuais (R$)</label>
+              <input type="number" id="outras-deducoes-anual" min="0" step="0.01" placeholder="0,00">
+            </div>
+
+            <div class="form-group full">
+              <label for="ir-retido">IR retido na fonte durante o ano (R$)</label>
+              <input type="number" id="ir-retido" min="0" step="0.01" placeholder="0,00">
+              <span class="form-hint">Informe o total de IR já descontado nos contracheques / informes de rendimento.</span>
+            </div>
+
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Calcular Imposto Anual</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ── Aba Tabelas ────────────────────────────────────────────────── -->
+    <div id="pane-tabelas" class="tab-pane">
+      <div class="card">
+        <h2>Tabela Progressiva Mensal — 2024</h2>
+        <table class="faixas-table">
+          <thead>
+            <tr>
+              <th>Base de cálculo (R$)</th>
+              <th class="text-right">Alíquota</th>
+              <th class="text-right">Parcela a deduzir (R$)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Até 2.259,20</td><td class="text-right">–</td><td class="text-right">–</td></tr>
+            <tr><td>De 2.259,21 até 2.826,65</td><td class="text-right">7,5%</td><td class="text-right">169,44</td></tr>
+            <tr><td>De 2.826,66 até 3.751,05</td><td class="text-right">15%</td><td class="text-right">381,44</td></tr>
+            <tr><td>De 3.751,06 até 4.664,68</td><td class="text-right">22,5%</td><td class="text-right">662,77</td></tr>
+            <tr><td>Acima de 4.664,68</td><td class="text-right">27,5%</td><td class="text-right">896,00</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Tabela Progressiva Anual — 2024</h2>
+        <table class="faixas-table">
+          <thead>
+            <tr>
+              <th>Base de cálculo (R$)</th>
+              <th class="text-right">Alíquota</th>
+              <th class="text-right">Parcela a deduzir (R$)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Até 26.963,20</td><td class="text-right">–</td><td class="text-right">–</td></tr>
+            <tr><td>De 26.963,21 até 33.919,80</td><td class="text-right">7,5%</td><td class="text-right">2.022,24</td></tr>
+            <tr><td>De 33.919,81 até 45.012,60</td><td class="text-right">15%</td><td class="text-right">4.566,23</td></tr>
+            <tr><td>De 45.012,61 até 55.976,16</td><td class="text-right">22,5%</td><td class="text-right">7.942,18</td></tr>
+            <tr><td>Acima de 55.976,16</td><td class="text-right">27,5%</td><td class="text-right">10.740,99</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Deduções Permitidas — 2024</h2>
+        <table class="faixas-table">
+          <thead>
+            <tr><th>Tipo de dedução</th><th class="text-right">Valor / Limite</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Por dependente (mensal)</td><td class="text-right">R$ 189,59</td></tr>
+            <tr><td>Por dependente (anual)</td><td class="text-right">R$ 2.275,08</td></tr>
+            <tr><td>Despesas de instrução — por pessoa (anual)</td><td class="text-right">R$ 3.561,50</td></tr>
+            <tr><td>Despesas médicas</td><td class="text-right">Sem limite</td></tr>
+            <tr><td>Contribuições ao INSS</td><td class="text-right">Valor pago</td></tr>
+            <tr><td>Pensão alimentícia judicial</td><td class="text-right">Valor pago</td></tr>
+            <tr><td>Contribuições a entidades de previdência complementar</td><td class="text-right">12% da renda tributável</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Tabela do INSS (Empregado CLT) — 2024</h2>
+        <table class="faixas-table">
+          <thead>
+            <tr>
+              <th>Salário de contribuição (R$)</th>
+              <th class="text-right">Alíquota</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Até 1.412,00</td><td class="text-right">7,5%</td></tr>
+            <tr><td>De 1.412,01 até 2.666,68</td><td class="text-right">9%</td></tr>
+            <tr><td>De 2.666,69 até 4.000,03</td><td class="text-right">12%</td></tr>
+            <tr><td>De 4.000,04 até 7.786,02</td><td class="text-right">14%</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:.8rem;color:#94a3b8;margin-top:.75rem;">
+          O INSS é calculado de forma progressiva (cada faixa incide apenas sobre a parcela do salário dentro dela).
+        </p>
+      </div>
+
+      <div class="info-box">
+        <strong>Fontes:</strong> Receita Federal do Brasil — Lei nº 11.482/2007, atualizada pela Lei nº 14.663/2023.
+        Portaria Interministerial MPS/MF nº 3/2024 (tabela INSS).
+        Os valores são de referência; consulte sempre a legislação vigente e um contador para situações específicas.
+      </div>
+    </div>
+
+    <!-- Resultado (compartilhado) -->
+    <div id="resultado"></div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    Calculadora IRPF &mdash; Uso educacional. Não substitui assessoria contábil ou tributária profissional.
+  </div>
+</footer>
+
+<script src="js/tabelas.js"></script>
+<script src="js/calculos.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
